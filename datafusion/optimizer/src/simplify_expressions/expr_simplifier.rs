@@ -2421,6 +2421,7 @@ mod tests {
         assert_no_change(regex_match(col("c1"), lit("_")));
         assert_no_change(regex_match(col("c1"), lit("f%o")));
         assert_no_change(regex_match(col("c1"), lit("f_o")));
+        assert_no_change(regex_match(col("c1"), lit("^(foo.*)$")));
 
         // empty cases
         assert_change(regex_match(col("c1"), lit("")), lit(true));
@@ -2448,6 +2449,8 @@ mod tests {
             regex_not_match(col("c1"), lit("^foo$")),
             col("c1").not_eq(lit("foo")),
         );
+
+        // regular expressions that match grouped literals
         assert_change(
             regex_match(col("c1"), lit("^(foo|bar)$")),
             col("c1").eq(lit("bar")).or(col("c1").eq(lit("foo"))),
